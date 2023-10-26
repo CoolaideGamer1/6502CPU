@@ -1,4 +1,4 @@
-9#include <iostream>
+#include <iostream>
 #include <string>
 
 using uint8 = unsigned char;
@@ -278,6 +278,33 @@ struct CPU {
         uint8 LowAddr = FetchUINT8(Cycles, memory);
         uint16 Address = concat(HighAddr, LowAddr);
         Address = A;
+      } break;
+      case XIndexedAbsolute: {
+        uint8 LowAddr = FetchUINT8(Cycles, memory);
+        uint8 HighAddr = FetchUINT8(Cycles, memory);
+        uint16 Address = concat(HighAddr, LowAddr);
+        Address += X;
+        A = ReadUINT8(Address, Cycles, memory);
+        sr.Z = (A == 0);
+        sr.N = (A & 0b10000000) > 0;
+      } break;  
+      case YIndexedAbsolute:{
+        uint8 LowAddr = FetchUINT8(Cycles, memory);
+        uint8 HighAddr = FetchUINT8(Cycles, memory);
+        uint16 Address = concat(HighAddr, LowAddr);
+        Address += X;
+        A = ReadUINT8(Address, Cycles, memory);
+        sr.Z = (A == 0);
+        sr.N = (A & 0b10000000) > 0;
+      } break;
+      case ZeroPage:{
+        uint8 Address = FetchUINT8(Cycles, memory);
+        A = concat(0x00, Address);
+        sr.Z = (A == 0);
+        sr.N = (A& 0b10000000) > 0;
+      } break;
+      case XIndexedZeroPageIndirect:{
+        
       } break;
       default:{
         std::cout << "No Addressing mode handled." << std::endl;
